@@ -9,3 +9,5 @@ Python modules
 - Flask-SQLAlchemy
 - Flask-WTF
 - Bootstrap-Flask
+- email-validator
+- python-dotenv

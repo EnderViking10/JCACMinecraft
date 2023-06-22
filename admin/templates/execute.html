@@ -1,13 +1,12 @@
 {% extends 'base.html' %}
 {% from 'bootstrap5/form.html' import render_form %}
 
-{% block content %}
+{% block app_content %}
     <div class="col-md-4">
         {{ render_form(form) }}
     </div>
 
     {% if result %}
-        {{ result.read() }}
-        {{ result.close() }}
+        {{ result }}
     {% endif %}
 {% endblock %}

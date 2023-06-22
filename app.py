@@ -1,7 +1,5 @@
-import os
 from datetime import datetime
 
-from dotenv import load_dotenv
 from flask import Flask
 from flask_bootstrap import Bootstrap5
 from flask_login import LoginManager, current_user
@@ -10,9 +8,6 @@ from flask_moment import Moment
 from flask_sqlalchemy import SQLAlchemy
 
 from config import Config
-
-basedir = os.path.abspath(os.path.dirname(__file__))
-load_dotenv(os.path.join(basedir, '.env'))
 
 # Create the global objects
 db = SQLAlchemy()

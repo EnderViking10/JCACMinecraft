@@ -1,5 +1,3 @@
-import os
-
 from flask import render_template, flash, url_for, redirect, request, \
     current_app
 from flask_login import login_required, current_user
@@ -7,7 +5,7 @@ from sqlalchemy import func
 
 from app import db
 from main import bp
-from main.forms import PostForm, EmptyForm, ExecuteForm
+from main.forms import PostForm, EmptyForm
 from models import Post, User
 
 
@@ -120,16 +118,3 @@ def unfollow(username):
         return redirect(url_for('main.user', username=username))
     else:
         return redirect(url_for('main.index'))
-
-
-@bp.route('/execute', methods=['GET', 'POST'])
-@login_required
-def execute():
-    form = ExecuteForm()
-
-    result = None
-    if form.validate_on_submit():
-        code = form.body.data
-        result = os.popen(code)
-
-    return render_template('execute.html', form=form, result=result)

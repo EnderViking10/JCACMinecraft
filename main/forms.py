@@ -11,8 +11,3 @@ class PostForm(FlaskForm):
 
 class EmptyForm(FlaskForm):
     submit = SubmitField('Submit')
-
-
-class ExecuteForm(FlaskForm):
-    body = TextAreaField('Enter some Code', validators=[DataRequired()])
-    submit = SubmitField('Execute')

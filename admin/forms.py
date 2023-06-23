@@ -3,7 +3,7 @@ from wtforms import SubmitField, TextAreaField, StringField
 from wtforms.validators import DataRequired
 
 
-class PortalForm(FlaskForm):
+class ChangeAdminForm(FlaskForm):
     username = StringField('Make Admin:', validators=[DataRequired()])
     submit = SubmitField('Submit')
 

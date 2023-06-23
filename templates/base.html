@@ -34,6 +34,7 @@
             {{ render_nav_item('main.explore', 'Explore') }}
             {% if current_user.admin %}
                 {{ render_nav_item('admin.execute', 'Execute') }}
+                {{ render_nav_item('admin.change_admin', 'Change Admins') }}
             {% endif %}
             {{ render_nav_item('auth.logout', 'Logout') }}
         {% endif %}

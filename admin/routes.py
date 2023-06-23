@@ -6,7 +6,7 @@ from flask_login import login_required, current_user
 from sqlalchemy import func
 
 from admin import bp
-from admin.forms import ExecuteForm
+from admin.forms import ExecuteForm, ChangeAdminForm
 from app import db
 from models import User
 
@@ -22,24 +22,26 @@ def admin_required(function):
     return decorated_view
 
 
-@bp.route('/adminpro/<username>', methods=['GET', 'POST'])
-def change_admin(username):
-    user = User.query.filter(func.lower(username) ==
-                             func.loweR(User.username)).first()
+@bp.route('/adminpro/', methods=['GET', 'POST'])
+def change_admin():
+    form = ChangeAdminForm()
+    if form.validate_on_submit():
+        user = User.query.filter(func.lower(form.username.data) ==
+                                 func.loweR(User.username)).first()
 
-    if user is None:
-        flash(f'{username} does not exist')
-        return redirect(url_for('main.user', username=username))
-    if user.admin:
-        user.admin = False
-        flash(f'{user.username} is no longer an admin')
-    elif not user.admin:
-        user.admin = True
-        flash(f'{user.username} is now an admin')
+        if user is None:
+            flash(f'{form.username.data} does not exist')
+            return redirect(url_for('admin.change_admin'))
+        if user.admin:
+            user.admin = False
+            flash(f'{user.username} is no longer an admin')
+        elif not user.admin:
+            user.admin = True
+            flash(f'{user.username} is now an admin')
 
-    db.session.commit()
+        db.session.commit()
 
-    return redirect(url_for('main.user', username=username))
+    return render_template('change_admin.html', form=form)
 
 
 @bp.route('/execute', methods=['GET', 'POST'])

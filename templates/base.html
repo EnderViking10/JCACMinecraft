@@ -1,3 +1,5 @@
+{% from 'bootstrap4/nav.html' import render_nav_item %}
+
 <!doctype html>
 <html>
 <head>
@@ -23,35 +25,18 @@
             aria-label="Toggle navigation">
         <span class="navbar-toggler-icon"></span>
     </button>
-    <div class="collapse navbar-collapse" id="navbarNav">
-        <ul class="navbar-nav">
-            {% if current_user.is_anonymous %}
-                <li class="nav-item">
-                    <a class="nav-link" href="{{ url_for('auth.login') }}">Login</a>
-                </li>
-                <li class="nav-item">
-                    <a class="nav-link" href="{{ url_for('auth.register') }}">Register</a>
-                </li>
-            {% else %}
-                <li class="nav-item">
-                    <a class="nav-link"
-                       href="{{ url_for('main.user', username=current_user.username) }}">Profile</a>
-                </li>
-                <li class="nav-item">
-                    <a class="nav-link" href="{{ url_for('main.explore') }}">Explore</a>
-                </li>
-                {% if current_user.admin %}
-                    <li class="nav-item">
-                        <a class="nav-link"
-                           href="{{ url_for('admin.portal') }}">Admin
-                            Portal</a>
-                    </li>
-                {% endif %}
-                <li class="nav-item">
-                    <a class="nav-link" href="{{ url_for('auth.logout') }}">Logout</a>
-                </li>
+    <div class="navbar-nav mr-auto">
+        {% if current_user.is_anonymous %}
+            {{ render_nav_item('auth.login', 'Login') }}
+            {{ render_nav_item('auth.register', 'register') }}
+        {% else %}
+            {{ render_nav_item('main.user', 'Profile', username=current_user.username) }}
+            {{ render_nav_item('main.explore', 'Explore') }}
+            {% if current_user.admin %}
+                {{ render_nav_item('admin.execute', 'Execute') }}
             {% endif %}
-        </ul>
+            {{ render_nav_item('auth.logout', 'Logout') }}
+        {% endif %}
     </div>
 </nav>
 {% block content %}

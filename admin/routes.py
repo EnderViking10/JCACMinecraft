@@ -6,7 +6,7 @@ from flask_login import login_required, current_user
 from sqlalchemy import func
 
 from admin import bp
-from admin.forms import PortalForm, ExecuteForm
+from admin.forms import ExecuteForm
 from app import db
 from models import User
 
@@ -22,25 +22,39 @@ def admin_required(function):
     return decorated_view
 
 
-@bp.route('/', methods=['GET', 'POST'])
-@login_required
-@admin_required
-def portal():
-    form = PortalForm()
-    if form.validate_on_submit():
-        user = User.query.filter(func.lower(form.username.data) ==
-                                 func.loweR(User.username)).first()
-        user.admin = True
-        db.session.commit()
+@bp.route('/make_admin/<username>', methods=['GET', 'POST'])
+def make_admin(username):
+    user = User.query.filter(func.lower(username) ==
+                             func.loweR(User.username)).first()
 
-        flash(f'{user.username} is now an admin')
-        return redirect(url_for('admin.portal'))
+    if user is None:
+        flash(f'{username} does not exist')
+        return redirect(url_for('main.user', username=username))
+    user.admin = True
+    db.session.commit()
 
-    return render_template('portal.html', form=form)
+    flash(f'{user.username} is now an admin')
+    return redirect(url_for('main.user', username=username))
+
+
+@bp.route('/remove_admin/<username>', methods=['GET', 'POST'])
+def remove_admin(username):
+    user = User.query.filter(func.lower(username) ==
+                             func.loweR(User.username)).first()
+
+    if user is None:
+        flash(f'{username} does not exist')
+        return redirect(url_for('main.user', username=username))
+    user.admin = False
+    db.session.commit()
+
+    flash(f'{user.username} is no longer an admin')
+    return redirect(url_for('main.user', username=username))
 
 
 @bp.route('/execute', methods=['GET', 'POST'])
 @login_required
+@admin_required
 def execute():
     form = ExecuteForm()
 

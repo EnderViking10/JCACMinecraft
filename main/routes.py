@@ -100,7 +100,7 @@ def follow(username):
         return redirect(url_for('main.index'))
 
 
-@bp.route('/unfollow/<username>', methods=['POST'])
+@bp.route('/unfollow/<username>', methods=['GET', 'POST'])
 @login_required
 def unfollow(username):
     form = EmptyForm()

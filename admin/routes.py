@@ -22,33 +22,23 @@ def admin_required(function):
     return decorated_view
 
 
-@bp.route('/make_admin/<username>', methods=['GET', 'POST'])
-def make_admin(username):
+@bp.route('/adminpro/<username>', methods=['GET', 'POST'])
+def change_admin(username):
     user = User.query.filter(func.lower(username) ==
                              func.loweR(User.username)).first()
 
     if user is None:
         flash(f'{username} does not exist')
         return redirect(url_for('main.user', username=username))
-    user.admin = True
+    if user.admin:
+        user.admin = False
+        flash(f'{user.username} is no longer an admin')
+    elif not user.admin:
+        user.admin = True
+        flash(f'{user.username} is now an admin')
+
     db.session.commit()
 
-    flash(f'{user.username} is now an admin')
-    return redirect(url_for('main.user', username=username))
-
-
-@bp.route('/remove_admin/<username>', methods=['GET', 'POST'])
-def remove_admin(username):
-    user = User.query.filter(func.lower(username) ==
-                             func.loweR(User.username)).first()
-
-    if user is None:
-        flash(f'{username} does not exist')
-        return redirect(url_for('main.user', username=username))
-    user.admin = False
-    db.session.commit()
-
-    flash(f'{user.username} is no longer an admin')
     return redirect(url_for('main.user', username=username))
 
 

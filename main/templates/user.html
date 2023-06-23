@@ -26,14 +26,17 @@
                         {{ form.submit(value='Unfollow') }}
                     </form>
                 {% endif %}
-                <form action="{{ url_for('admin.change_admin', username=user.username) }}" method="post">
-                    {{ form.hidden_tag() }}
-                    {% if current_user.admin and not user.admin %}
+                {% if current_user.admin and not user.admin %}
+                    <form action="{{ url_for('admin.change_admin', username=user.username) }}" method="post">
+                        {{ form.hidden_tag() }}
                         {{ form.submit(value='Make Admin') }}
-                    {% elif current_user.admin and user.admin and user != current_user %}
+                    </form>
+                {% elif current_user.admin and user.admin and user != current_user %}
+                    <form action="{{ url_for('admin.change_admin', username=user.username) }}" method="post">
+                        {{ form.hidden_tag() }}
                         {{ form.submit(value='Remove Admin') }}
-                    {% endif %}
-                </form>
+                    </form>
+                {% endif %}
             </td>
         </tr>
     </table>

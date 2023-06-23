@@ -40,6 +40,7 @@ def change_admin():
             flash(f'{user.username} is now an admin')
 
         db.session.commit()
+        return redirect(url_for('admin.change_admin'))
 
     return render_template('change_admin.html', form=form)
 

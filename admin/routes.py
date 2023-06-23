@@ -22,7 +22,7 @@ def admin_required(function):
     return decorated_view
 
 
-@bp.route('/adminpro/', methods=['GET', 'POST'])
+@bp.route('/adminpro', methods=['GET', 'POST'])
 def change_admin():
     form = ChangeAdminForm()
     if form.validate_on_submit():

@@ -80,20 +80,23 @@ def explore():
                            prev_url=prev_url)
 
 
-@bp.route('/follow/<username>', methods=['POST'])
+@bp.route('/follow/<username>', methods=['GET', 'POST'])
 def follow(username):
     form = EmptyForm()
 
     if form.validate_on_submit():
         _user = User.query.filter_by(username=username).first()
+
         if _user is None:
             flash(f'User {username} not found.')
             return redirect(url_for('main.index'))
         if _user == current_user:
             flash('You cannot follow yourself!')
             return redirect(url_for('main.user', username=username))
+
         current_user.follow(_user)
         db.session.commit()
+
         flash(f'You are following {username}!')
         return redirect(url_for('main.user', username=username))
     else:
@@ -104,16 +107,20 @@ def follow(username):
 @login_required
 def unfollow(username):
     form = EmptyForm()
+
     if form.validate_on_submit():
         _user = User.query.filter_by(username=username).first()
+
         if _user is None:
             flash(f'User {username} not found.')
             return redirect(url_for('main.index'))
         if _user == current_user:
             flash('You cannot unfollow yourself!')
             return redirect(url_for('main.user', username=username))
+
         current_user.unfollow(_user)
         db.session.commit()
+        
         flash(f'You are not following {username}.')
         return redirect(url_for('main.user', username=username))
     else:

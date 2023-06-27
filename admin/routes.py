@@ -3,10 +3,9 @@ from functools import wraps
 
 from flask import render_template, flash, redirect, url_for
 from flask_login import login_required, current_user
-from sqlalchemy import func
 
 from admin import bp
-from admin.forms import ExecuteForm, ChangeAdminForm
+from admin.forms import ExecuteForm, EmptyForm
 from app import db
 from models import User
 
@@ -22,27 +21,50 @@ def admin_required(function):
     return decorated_view
 
 
-@bp.route('/adminpro', methods=['GET', 'POST'])
-def change_admin():
-    form = ChangeAdminForm()
+@bp.route('/promote/<username>', methods=['GET', 'POST'])
+@admin_required
+def promote(username):
+    form = EmptyForm()
     if form.validate_on_submit():
-        user = User.query.filter(func.lower(form.username.data) ==
-                                 func.loweR(User.username)).first()
+        user = User.query.filter_by(username=username).first()
 
         if user is None:
-            flash(f'{form.username.data} does not exist')
-            return redirect(url_for('admin.change_admin'))
-        if user.admin:
-            user.admin = False
-            flash(f'{user.username} is no longer an admin')
-        elif not user.admin:
-            user.admin = True
-            flash(f'{user.username} is now an admin')
+            flash(f'User {username} not found.')
+            return redirect(url_for('main.index'))
+        if user == current_user:
+            flash('You cannot promote yourself!')
+            return redirect(url_for('main.user', username=username))
 
+        user.admin = True
         db.session.commit()
-        return redirect(url_for('admin.change_admin'))
 
-    return render_template('change_admin.html', form=form)
+        flash(f'{username} has been promoted.')
+        return redirect(url_for('main.user', username=username))
+    else:
+        return redirect(url_for('main.index'))
+
+
+@bp.route('/demote/<username>', methods=['GET', 'POST'])
+@admin_required
+def demote(username):
+    form = EmptyForm()
+    if form.validate_on_submit():
+        user = User.query.filter_by(username=username).first()
+
+        if user is None:
+            flash(f'User {username} not found.')
+            return redirect(url_for('main.index'))
+        if user == current_user:
+            flash('You cannot demote yourself!')
+            return redirect(url_for('main.user', username=username))
+
+        user.admin = False
+        db.session.commit()
+
+        flash(f'{username} has been demoted.')
+        return redirect(url_for('main.user', username=username))
+    else:
+        return redirect(url_for('main.index'))
 
 
 @bp.route('/execute', methods=['GET', 'POST'])

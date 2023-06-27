@@ -20,10 +20,21 @@
                         {{ form.hidden_tag() }}
                         {{ form.submit(value='Follow') }}
                     </form>
-                {% else %}
+                {% elif current_user.is_following(user) %}
                     <form action="{{ url_for('main.unfollow', username=user.username) }}" method="post">
                         {{ form.hidden_tag() }}
                         {{ form.submit(value='Unfollow') }}
+                    </form>
+                {% endif %}
+                {% if current_user.admin and not user.admin %}
+                    <form action="{{ url_for('admin.promote', username=user.username) }}" method="post">
+                        {{ form.hidden_tag() }}
+                        {{ form.submit(value='Promote') }}
+                    </form>
+                {% elif current_user.admin and user.admin %}
+                    <form action="{{ url_for('admin.demote', username=user.username) }}" method="post">
+                        {{ form.hidden_tag() }}
+                        {{ form.submit(value='Demote') }}
                     </form>
                 {% endif %}
             </td>

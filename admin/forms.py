@@ -1,11 +1,6 @@
 from flask_wtf import FlaskForm
-from wtforms import SubmitField, TextAreaField, StringField
+from wtforms import SubmitField, TextAreaField
 from wtforms.validators import DataRequired
-
-
-class ChangeAdminForm(FlaskForm):
-    username = StringField('Make Admin:', validators=[DataRequired()])
-    submit = SubmitField('Submit')
 
 
 class ExecuteForm(FlaskForm):
